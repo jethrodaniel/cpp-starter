@@ -1,0 +1,141 @@
+#!/bin/bash
+
+this_dir=$(dirname $(readlink -f $0))
+
+# Asks a yes or no question, defaulting to no
+#
+# $1 - the question to ask (no need for a `?`)
+ask() {
+  local choice=''
+  echo "${cyan}$1${reset}?"
+  echo "  default is no"
+  read -p '  (y/n): ' choice
+  [[ $choice =~ ^[yY][eE][sS]|[yY]$ ]]
+}
+
+# Uses sed to find and replace text in the given file
+#
+# $1 - the text to replace
+# $2 - the text to replace with
+# $3 - the file
+replace_in_file() {
+  # sed works differently on OS X
+  if [[ "$(uname -a)" = *"Darwin"* ]] ; then
+    sed -i '' "s/$1/$2/g" "$PWD/$3"
+  else
+    sed -i "s/$1/$2/g" "$PWD/$3"
+  fi
+}
+
+# Uses sed to delete all lines in a file after a match
+#
+# $1 - the text to match (will be removed)
+# $2 - the file
+delete_after_match() {
+  sed -i "/^$1$/Q" "$PWD/$2"
+}
+
+# Uses sed to delete all lines in a file that match the expression
+#
+# $1 - the text to match (will be removed)
+# $2 - the file
+delete_matching() {
+  sed -i "/$1/d" "$PWD/$2"
+}
+
+replace_in_file "__name__" "$(git config user.name)" "LICENSE"
+
+echo 'Setting up a basic c++ project structure ...'
+echo
+echo 'We start with the following layout:'
+echo
+echo '├── .gitignore'
+echo '├── .gitmodules'
+echo '├── LICENSE'
+echo '├── README.md'
+echo '├── setup.sh'
+echo '├── src'
+echo '└── spec'
+echo
+
+echo 'What would you like your inital c++ file to be named? '
+echo
+read -p "(can't be main, 3 char min): " choice
+echo
+
+until [[ $choice =~ ^[a-Z]{3}[a-Z]*$ ]] && [[ $choice != 'main' ]]; do
+  echo
+  echo "  ❌invalid choice (can't be main, min 3 chars)"
+  unset choice
+  echo
+  read -p 'initial name: ' choice
+  echo
+done
+
+choice_upcase="${choice^}" # Bash 4+
+
+mv src/__program__.cpp "src/$choice.cpp"
+mv src/__program__.hpp "src/$choice.hpp"
+mv spec/__program__spec.cpp "spec/${choice}_spec.cpp"
+
+replace_in_file "__program__" "$choice" "src/$choice.cpp"
+replace_in_file "__program__" "$choice" "src/$choice.hpp"
+replace_in_file "__program__" "$choice" "src/main.cpp"
+replace_in_file "__program__" "$choice" "src/main.hpp"
+replace_in_file "__program__" "$choice" "spec/${choice}_spec.cpp"
+
+replace_in_file "__program_upcase__" "$choice_upcase" "src/$choice.cpp"
+replace_in_file "__program_upcase__" "$choice_upcase" "spec/${choice}_spec.cpp"
+
+echo 'Created the following source and spec files:'
+echo
+echo '├── src'
+echo "│   ├── $choice.cpp"
+echo "│   ├── $choice.hpp"
+echo "│   ├── main.cpp"
+echo "│   └── main.hpp"
+echo '└── spec'
+echo "    ├── spec_helper.cpp"
+echo "    └── ${choice}_spec.cpp"
+echo
+
+rm README.md
+cat <<- EOF > README.md
+# $choice
+
+TODO: add project information
+
+This project was bootstrapped with [cpp-starter](https://github.com/jethrodaniel/cpp-starter).
+EOF
+
+cat <<- EOF > init_commit_msg
+inital setup
+
+This project was bootstrapped with [cpp-starter](https://github.com/jethrodaniel/cpp-starter).
+EOF
+
+at_exit() {
+  rm -- "$0"
+
+  echo 'Committing this setup ...'
+
+  git add .
+  git reset init_commit_msg
+  git checkout --orphan master setup
+  git commit -F init_commit_msg
+  rm init_commit_msg
+  git branch -D setup
+  git remote remove origin
+
+  echo
+  echo "You're good to go - now off to the code mines!"
+  echo
+
+  make spec
+
+  echo 'To get help, call `make`'
+
+  echo
+}
+
+trap at_exit EXIT
