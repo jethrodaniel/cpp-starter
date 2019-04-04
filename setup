@@ -39,22 +39,24 @@ mv src/__program__.cpp "src/$choice.cpp"
 mv src/__program__.hpp "src/$choice.hpp"
 mv spec/__program__spec.cpp "spec/${choice}_spec.cpp"
 
-replace_in_file "__program__" "$choice" "src/$choice.cpp"
-replace_in_file "__program__" "$choice" "src/$choice.hpp"
-replace_in_file "__program__" "$choice" "src/main.cpp"
-replace_in_file "__program__" "$choice" "src/main.hpp"
-replace_in_file "__program__" "$choice" "spec/${choice}_spec.cpp"
+replace_in_file "__program__"         "$choice"         "src/$choice.cpp"
+replace_in_file "__program_upcase__" "${choice_upcase}" "src/$choice.cpp"
 
-replace_in_file "__program_upcase__" "$choice_upcase" "src/$choice.cpp"
-replace_in_file "__program_upcase__" "$choice_upcase" "spec/${choice}_spec.cpp"
+replace_in_file "__program__"        "$choice"          "src/$choice.hpp"
+replace_in_file "__program_upcase__" "${choice_upcase}" "src/$choice.hpp"
+
+replace_in_file "__program__"        "$choice"          "src/main.cpp"
+replace_in_file "__program_upcase__" "${choice_upcase}" "src/main.cpp"
+
+replace_in_file "__program__"        "$choice"          "spec/${choice}_spec.cpp"
+replace_in_file "__program_upcase__" "${choice_upcase}" "spec/${choice}_spec.cpp"
 
 echo 'Created the following source and spec files:'
 echo
 echo '├── src'
 echo "│   ├── $choice.cpp"
 echo "│   ├── $choice.hpp"
-echo "│   ├── main.cpp"
-echo "│   └── main.hpp"
+echo "│   └── main.cpp"
 echo '└── spec'
 echo "    ├── spec_helper.cpp"
 echo "    └── ${choice}_spec.cpp"
@@ -92,7 +94,7 @@ at_exit() {
   echo "You're good to go - now off to the code mines!"
   echo
 
-  make spec
+  make spec test
 
   echo 'To get help, call `make`'
 

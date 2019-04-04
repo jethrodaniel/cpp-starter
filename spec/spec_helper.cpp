@@ -1,3 +1,5 @@
+/*
+
 #include <sstream>
 #include <fstream>
 
@@ -10,3 +12,4 @@ static std::string to_s(std::string filename) {
   return buffer.str();
 }
 
+*/

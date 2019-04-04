@@ -1,14 +1,17 @@
 #ifndef __program___H
 #define __program___H
 
+#include <string>
+
 namespace __program__ {
 
 class __program_upcase__ {
 
-public:
+  public:
 
+  int example();
 };
 
-} // namespace__program__
+} // namespace __program__
 
 #endif

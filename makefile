@@ -14,7 +14,8 @@ SPEC_FLAGS += -I./spec/Catch2
 
 PROGRAM_NAME = package
 
-SOURCES    := $(shell find src -name '*.cpp')
+SOURCES    := $(shell find src -name '*.cpp' -not -name 'main.cpp')
+MAIN       := './src/main.cpp'
 SPEC_SETUP := './spec/setup.cpp'
 SPECS      := $(shell find ./spec -name '*.cpp'            \
                                   -not -path '*Catch2*'    \
@@ -37,7 +38,7 @@ usage:
 .PHONY: build
 build:
 	@echo "Compiling source code into ./$(PROGRAM_NAME)"
-	@$(CPP) $(CPP_FLAGS) $(SOURCES) -o $(PROGRAM_NAME)
+	@$(CPP) $(CPP_FLAGS) $(SOURCES) $(MAIN) -o $(PROGRAM_NAME)
 
 .PHONY: clean
 clean:
@@ -68,7 +69,7 @@ spec: .spec.out
 	./.spec.out
 
 .spec.out: .setup.o $(SPECS)
-	$(CPP) $(SPEC_FLAGS) .setup.o $(SPECS) -o .spec.out
+	$(CPP) $(SOURCES) $(SPEC_FLAGS) .setup.o $(SPECS) -o .spec.out
 
 .setup.o:
 	$(CPP) $(SPEC_FLAGS) -c $(SPEC_SETUP) -o .setup.o
