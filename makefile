@@ -29,7 +29,8 @@ usage:
 	@echo "  clean       Removes generated files, except .setup.o and .spec.out"
 	@echo "  lint        Runs the linter"
 	@echo "  style       Formats source and spec files to adhere to project standards"
-	@echo "  spec        Runs the specs"
+	@echo "  spec        Runs the specs (c++)"
+	@echo "  test        Runs the unit tests (sh)"
 	@echo "  purge       Removes all generated files"
 	@echo
 
@@ -71,6 +72,11 @@ spec: .spec.out
 
 .setup.o:
 	$(CPP) $(SPEC_FLAGS) -c $(SPEC_SETUP) -o .setup.o
+
+.PHONY: test
+test:
+	@echo "Running the tests..."
+	./vendor/bats/bin/bats spec/setup.bats
 
 PHONY: purge
 purge:
