@@ -90,14 +90,12 @@ at_exit() {
   git branch -D setup
   git remote remove origin
 
+  make spec test
+
   echo
   echo "You're good to go - now off to the code mines!"
   echo
-
-  make spec test
-
   echo 'To get help, call `make`'
-
   echo
 }
 
