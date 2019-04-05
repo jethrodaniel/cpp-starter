@@ -1,11 +1,11 @@
-# c-starter
+# cpp-starter
 
-This a basic starter template for c code.
+This a basic starter template for c++ code.
 
 ## Installation
 
 ```
-git clone --recurse-submodules https://github.com/jethrodaniel/c-starter.git your-project-name
+git clone --recurse-submodules https://github.com/jethrodaniel/cpp-starter.git your-project-name
 
 cd your-project-name
 
@@ -18,44 +18,20 @@ It's that easy.
 
 It sets you up with:
 
-  - Either a Makefile or a Rakefile with basic project commands
-  - Unit tests with [Unity](https://github.com/ThrowTheSwitch/Unity)
-  - Memory checking with [valgrind](http://valgrind.org/)
-  - Tree output of the project
-
-Additionally, if you choose to use Ruby in your build system:
-
-  - CLI tests (in Gherkin) with [Aruba/Cucumber](https://github.com/cucumber/aruba)
-
-
-### Ruby Setup
-
-You only need Ruby if you chose it during setup. If you don't have Ruby installed,
-[rbenv](https://github.com/rbenv/rbenv) is my recommended way to get Ruby - see
-their [install](https://github.com/rbenv/rbenv#installation) section for more info.
+  - A Makefile with basic project commands
+  - BDD-style specs using [Catch2](https://github.com/catchorg/Catch2)
 
 ```
-git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+Usage
 
-# For bash
-echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
+  make COMMAND
 
-# Set up rbenv in your shell
-~/.rbenv/bin/rbenv init
+COMMANDS
 
-# Verify the install
-curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor | bash
+  build       Compiles the source code into an executable
+  clean       Removes generated files, except .setup.o and .spec.out
+  spec        Runs the specs (c++)
+  test        Runs the unit tests (sh)
+  purge       Removes all generated files
 
-# Install ruby-build, a rbenv plugin to easily install rubies
-mkdir -p "$(rbenv root)"/plugins
-git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
-
-# Install our version of ruby
-rbenv install 2.5.3
 ```
-
-## TODO
-
-- [ ] Add more example tests
-- [ ] Linters for both C and Ruby
-- [ ] More detailed README
