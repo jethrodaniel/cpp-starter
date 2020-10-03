@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 
-#include <app.hpp>
+#include <app/app.hpp>
 
 int main(int  /*argc*/, char ** /*argv*/) {
   std::cout << "yo" << std::endl;
