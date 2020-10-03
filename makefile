@@ -16,7 +16,8 @@ HEADERS := $(wildcard src/*.hpp)
 OBJS    := ${SRCS:.cpp=.o}
 TARGET  := bin
 
-TEST_FLAGS    := -I third_party/Catch2/single_include/catch2
+CATCH2_INCLUDE := third_party/Catch2/single_include/catch2
+TEST_FLAGS    := -I $(CATCH2_INCLUDE)
 TEST_PROG     := test/run
 TEST_MAIN     := test/main.cpp
 TEST_MAIN_OBJ := ${TEST_MAIN:.cpp=.o}
@@ -72,6 +73,12 @@ $(TEST_PROG): $(OBJS) $(TEST_OBJS) $(TEST_MAIN_OBJ)
 	$(CC) $(FLAGS) $(TEST_FLAGS) $^ -o $@
 
 ##
+# Lint
+lint: $(SRCS) $(TEST_SRCS) $(MAIN)
+	clang-tidy $^ -- -I $(CATCH2_INCLUDE) $(FLAGS)
+
+##
 # Install prerequisites
 prereqs:
 	yum install -y centos-release-scl llvm-toolset-7-clang-tools-extra
+	scl enable llvm-toolset-7 bash
