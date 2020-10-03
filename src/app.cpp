@@ -1,5 +1,5 @@
-#include "./app.hpp"
+#include <app.hpp>
 
-int foo(void) {
+int   foo() {
   return 0;
 }

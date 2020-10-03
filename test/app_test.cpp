@@ -1,5 +1,5 @@
+#include <app.hpp>
 #include <catch.hpp>
-#include "../src/app.hpp"
 
 SCENARIO("app", "[app]") {
   GIVEN("something") {

@@ -6,23 +6,25 @@
 PROG=app
 
 CC       := g++
-FLAGS    := -std=c++11
+FLAGS    := -std=c++11 -I include
 MAIN     := src/main.cpp
 MAIN_OBJ := ${MAIN:.cpp=.o}
 
 SRCS    := $(wildcard src/*.cpp)
 SRCS    := $(filter-out src/main.cpp, ${SRCS})
-HEADERS := $(wildcard src/*.hpp)
+HEADERS := $(wildcard include/*.hpp)
 OBJS    := ${SRCS:.cpp=.o}
 TARGET  := bin
 
 CATCH2_INCLUDE := third_party/Catch2/single_include/catch2
-TEST_FLAGS    := -I $(CATCH2_INCLUDE)
+TEST_FLAGS    := -I $(CATCH2_INCLUDE) -I src
 TEST_PROG     := test/run
 TEST_MAIN     := test/main.cpp
 TEST_MAIN_OBJ := ${TEST_MAIN:.cpp=.o}
 TEST_SRCS     := $(wildcard test/*test.cpp)
 TEST_OBJS     := ${TEST_SRCS:.cpp=.o}
+
+LINT_FLAGS := -checks='*' -header-filter='.*'
 
 ##
 
@@ -75,7 +77,9 @@ $(TEST_PROG): $(OBJS) $(TEST_OBJS) $(TEST_MAIN_OBJ)
 ##
 # Lint
 lint: $(SRCS) $(TEST_SRCS) $(MAIN)
-	clang-tidy $^ -- -I $(CATCH2_INCLUDE) $(FLAGS)
+	clang-tidy $(LINT_FLAGS) $^ -- -I $(CATCH2_INCLUDE) $(FLAGS)
+fix: $(SRCS) $(TEST_SRCS) $(MAIN)
+	clang-tidy --fix $(LINT_FLAGS) $^ -- -I $(CATCH2_INCLUDE) $(FLAGS)
 
 ##
 # Install prerequisites

@@ -1,11 +1,9 @@
 #include <iostream>
 #include <string>
 
-#include "./app.hpp"
+#include <app.hpp>
 
-/* #include "uofmsh.hpp" */
-
-int main(int argc, char **argv) {
+int main(int  /*argc*/, char ** /*argv*/) {
   std::cout << "yo" << std::endl;
   auto i = foo();
   return i;
