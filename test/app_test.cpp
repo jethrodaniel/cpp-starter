@@ -3,7 +3,7 @@
 
 SCENARIO("app", "[app]") {
   GIVEN("something") {
-		WHEN("something happens") {
+    WHEN("something happens") {
       THEN("we get this") {
         REQUIRE(foo() == 0);
       }
