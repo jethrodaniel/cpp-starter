@@ -70,3 +70,8 @@ $(TEST_MAIN_OBJ):
 	$(CC) $(FLAGS) $(TEST_FLAGS) $(TEST_MAIN) -c -o $@
 $(TEST_PROG): $(OBJS) $(TEST_OBJS) $(TEST_MAIN_OBJ)
 	$(CC) $(FLAGS) $(TEST_FLAGS) $^ -o $@
+
+##
+# Install prerequisites
+prereqs:
+	yum install -y centos-release-scl llvm-toolset-7-clang-tools-extra
