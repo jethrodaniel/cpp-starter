@@ -4,7 +4,6 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -13,9 +12,6 @@ jobs:
     - name: checkout submodules
       run: |
         git submodule update --init
-
-    - name: build
-      run: make build
 
     - name: test
       run: make
