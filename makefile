@@ -28,7 +28,7 @@ LINT_FLAGS := -checks='*' -header-filter='.*'
 
 ##
 
-default: clean test run
+default: clean build test run
 
 ##
 # Helpers
@@ -39,7 +39,7 @@ tree:
 # Cleanup object files and executables.
 # To avoid compiling Catch2, we don't remove the test driver obj file.
 clean:
-	rm -rfv *.o $(TEST_OBJS) $(TEST_PROG) $(OBJS) $(MAIN_OBJ) $(TARGET)
+	rm -rfv *.o $(TEST_OBJS) $(TEST_PROG) $(OBJS) $(MAIN_OBJ) $(TARGET) tmp
 purge: clean
 	rm -rf $(TEST_MAIN_OBJ)
 
@@ -50,11 +50,12 @@ run: $(TARGET)/$(PROG)
 	./$<
 $(TARGET):
 	mkdir -p $(TARGET)
-$(OBJS): $(SRCS)
+%.o: %.cpp
 	$(CC) $(FLAGS) $< -o $@ -c
 $(TARGET)/$(PROG): $(OBJS) $(MAIN)
 	mkdir -p $(TARGET)
 	$(CC) $(FLAGS) $^ -o $@
+build: $(TARGET)/$(PROG)
 
 ##
 # Testing using Catch2
@@ -67,9 +68,9 @@ $(TARGET)/$(PROG): $(OBJS) $(MAIN)
 #
 test: $(TEST_PROG)
 	./$<
-$(TEST_OBJS): $(TEST_SRCS)
-	$(CC) $(FLAGS) $(TEST_FLAGS) $^ -o $@ -c
-$(TEST_MAIN_OBJ):
+%test.o: %test.cpp
+	$(CC) $(FLAGS) $(TEST_FLAGS) $^ -c -o $@
+$(TEST_MAIN_OBJ): $(TEST_MAIN)
 	$(CC) $(FLAGS) $(TEST_FLAGS) $(TEST_MAIN) -c -o $@
 $(TEST_PROG): $(OBJS) $(TEST_OBJS) $(TEST_MAIN_OBJ)
 	$(CC) $(FLAGS) $(TEST_FLAGS) $^ -o $@
@@ -82,7 +83,7 @@ fix: $(SRCS) $(TEST_SRCS) $(MAIN)
 	clang-tidy --fix $(LINT_FLAGS) $^ -- -I $(CATCH2_INCLUDE) $(FLAGS)
 
 ##
-# Install prerequisites
+# Install prerequisites for the linter
 prereqs:
 	yum install -y centos-release-scl llvm-toolset-7-clang-tools-extra
 	scl enable llvm-toolset-7 bash
